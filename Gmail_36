@@ -1,0 +1,49 @@
+# Import necessary modules
+import uiautomator2 as ui2
+import time
+import subprocess
+
+# Device serial number of the receiver device
+receiver_device_serial = "192.168.2.39:5555"
+
+# Create a Device object for the sender device
+sender_device = ui2.Device('cf611ff9')
+
+# Create a Device object for the receiver device
+receiver_device = ui2.Device(receiver_device_serial)
+
+# ADB commands to turn on the receiver and sender devices' screens
+receiver_turn_on_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '224']
+sender_turn_on_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '224']
+
+# ADB commands to turn off the receiver and sender devices' screens
+receiver_turn_off_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '26']
+sender_turn_off_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '26']
+
+# Define the package name and activity name of the Gmail app
+package_name = "com.google.android.gm"
+activity_name = "com.google.android.gm.ConversationListActivityGmail"
+
+# ADB command to start the Gmail app on the sender device
+adb_command = ["adb", "-s", "cf611ff9", "shell", "am", "start", "-n", f"{package_name}/{activity_name}"]
+
+# Execute the ADB command to open the Gmail app
+subprocess.run(adb_command)
+
+sender_device(resourceId="com.google.android.gm:id/compose_button").click()
+time.sleep(2)
+sender_device.xpath('//*[@resource-id="com.google.android.gm:id/peoplekit_autocomplete_chip_group"]/android.widget.EditText[1]').set_text("shubhampalsingh385@gmail.com")
+time.sleep(2)
+sender_device.xpath('//*[@resource-id="com.google.android.gm:id/peoplekit_listview_flattened_row"]/android.widget.RelativeLayout[2]').click()
+time.sleep(2)
+sender_device.xpath('//*[@resource-id="com.google.android.gm:id/wc_body_layout"]/android.webkit.WebView[1]').set_text("hello world")
+time.sleep(2)
+sender_device(resourceId="com.google.android.gm:id/send").click()
+
+time.sleep(5)
+receiver_device(resourceId="com.google.android.gm:id/widget_folder").click()
+time.sleep(6)
+if receiver_device(text="Shubham Pal Singh").exists():
+    print("Email recieved from shubham pal singh")
+else:
+    print("Email not recieved from shubham pal singh")
