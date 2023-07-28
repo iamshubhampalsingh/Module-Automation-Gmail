@@ -1,0 +1,53 @@
+# Import necessary modules
+import uiautomator2 as ui2
+import time
+import subprocess
+
+# Device serial number of the receiver device
+receiver_device_serial = "192.168.2.39:5555"
+
+# Create a Device object for the sender device
+sender_device = ui2.Device('cf611ff9')
+
+# Create a Device object for the receiver device
+receiver_device = ui2.Device(receiver_device_serial)
+
+# ADB commands to turn on the receiver and sender devices' screens
+receiver_turn_on_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '224']
+sender_turn_on_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '224']
+
+# ADB commands to turn off the receiver and sender devices' screens
+receiver_turn_off_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '26']
+sender_turn_off_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '26']
+
+receiver_device.long_click(0.455, 0.587)
+time.sleep(2)
+receiver_device(text="Widgets").click()
+time.sleep(2)
+# Scroll to find the Gmail app icon
+scrollable_container = receiver_device(scrollable=True)
+gmail_app_icon = None
+
+# Loop through the scrollable container to find the Gmail app icon
+for _ in range(5):  # Limit the number of scroll attempts
+    gmail_app_icon = receiver_device(resourceId="com.android.launcher3:id/app_title", text="Gmail")
+    if gmail_app_icon.exists:
+        break
+    scrollable_container.swipe("up")
+    time.sleep(1)
+
+# Check if the Gmail app icon was found
+if gmail_app_icon.exists:
+    gmail_app_icon.click()
+else:
+    print("Gmail app icon not found.")
+time.sleep(2)
+# Long click on the element with resourceId="com.google.android.gm:id/widget_folder"
+widget_folder_element = receiver_device(resourceId="com.google.android.gm:id/widget_folder")
+widget_folder_element.long_click(duration=5)  # Duration is in milliseconds (5000 milliseconds = 5 seconds)
+time.sleep(2)  # Wait for the context menu to appear after the long click
+
+time.sleep(2)
+receiver_device(resourceId="com.google.android.gm:id/mailbox_name", text="shubhampalsingh1993@gmail.com").click()
+time.sleep(2)
+receiver_device(resourceId="com.google.android.gm:id/name", text="Primary").click()
