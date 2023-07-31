@@ -1,0 +1,62 @@
+# Import necessary modules
+import uiautomator2 as ui2
+import time
+import subprocess
+from datetime import datetime, timedelta
+
+# Device serial number of the receiver device
+receiver_device_serial = "192.168.2.39:5555"
+
+# Create a Device object for the sender device
+sender_device = ui2.Device('cf611ff9')
+
+# Create a Device object for the receiver device
+receiver_device = ui2.Device(receiver_device_serial)
+
+# ADB commands to turn on the receiver and sender devices' screens
+receiver_turn_on_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '224']
+sender_turn_on_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '224']
+
+# ADB commands to turn off the receiver and sender devices' screens
+receiver_turn_off_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '26']
+sender_turn_off_command = ['adb', '-s', 'cf611ff9', 'shell', 'input', 'keyevent', '26']
+
+# Define the package name and activity name of the Gmail app
+package_name = "com.google.android.gm"
+activity_name = "com.google.android.gm.ConversationListActivityGmail"
+
+# ADB command to start the Gmail app
+adb_command = ["adb", "-s", receiver_device_serial, "shell", "am", "start", "-n", f"{package_name}/{activity_name}"]
+
+# Execute the ADB command
+subprocess.run(adb_command)
+time.sleep(2)
+receiver_device(resourceId="com.google.android.gm:id/compose_button").click()
+time.sleep(2)
+receiver_device.xpath('//*[@resource-id="com.google.android.gm:id/peoplekit_autocomplete_chip_group"]/android.widget.EditText[1]').set_text("shubhampalsingh385@gmail.com")
+time.sleep(2)
+receiver_device(resourceId="com.google.android.gm:id/peoplekit_listview_contact_method").click()
+time.sleep(2)
+receiver_device(resourceId="com.google.android.gm:id/subject").set_text("welcome mail")
+time.sleep(2)
+receiver_device.xpath('//*[@resource-id="com.google.android.gm:id/wc_body_layout"]/android.webkit.WebView[1]').set_text("hello i am shubham pal singh")
+time.sleep(2)
+receiver_device.press("home")
+time.sleep(10)
+
+sender_device(text="Phone").click()
+time.sleep(2)
+sender_device(resourceId="com.google.android.dialer:id/dialpad_fab").click()
+sender_device(text='8').click()
+sender_device(text='4').click()
+sender_device(text='4').click()
+sender_device(text='8').click()
+sender_device(text='6').click()
+sender_device(text='9').click()
+sender_device(text='7').click()
+sender_device(text='4').click()
+sender_device(text='8').click()
+sender_device(text='8').click()
+sender_device(resourceId="com.google.android.dialer:id/dialpad_voice_call_button").click()
+time.sleep(2)
+receiver_device(resourceId="android:id/action0", text="ANSWER").click()
