@@ -1,0 +1,37 @@
+import uiautomator2 as ui2
+import time
+import subprocess
+
+# Device serial number of the receiver device
+receiver_device_serial = "192.168.2.39:5555"
+
+# Device serial number of the sender device
+sender_device_serial = 'cf611ff9'  # Use the actual sender device serial number as a string
+
+# Create a Device object for the sender device
+sender_device = ui2.connect(sender_device_serial)
+
+# Create a Device object for the receiver device
+receiver_device = ui2.connect(receiver_device_serial)
+
+# ADB command to perform a long press on the power button (5 seconds)
+power_long_press_command = ['adb', '-s', sender_device_serial, 'shell', 'input', 'keyevent', '26', '--longpress', '5000']
+
+# ADB command to turn on the receiver device's screen
+receiver_turn_on_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '224']
+
+# ADB command to turn off the receiver device's screen
+receiver_turn_off_command = ['adb', '-s', receiver_device_serial, 'shell', 'input', 'keyevent', '26']
+
+# Execute the power button long press
+subprocess.run(power_long_press_command)
+
+# Define the package name and activity name of the Gmail app
+package_name = "com.google.android.gm"
+activity_name = "com.google.android.gm.ConversationListActivityGmail"
+
+# ADB command to start the Gmail app on the receiver device
+receiver_adb_command = ["adb", "-s", receiver_device_serial, "shell", "am", "start", "-n", f"{package_name}/{activity_name}"]
+
+# Execute the power button long press
+subprocess.run(power_long_press_command)
